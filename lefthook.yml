@@ -1,0 +1,26 @@
+pre-commit:
+  parallel: false
+  commands:
+    lint:
+      glob: "*.py"
+      run: uv run ruff check --fix {staged_files}
+      stage_fixed: true
+    format:
+      glob: "*.py"
+      run: uv run ruff format {staged_files}
+      stage_fixed: true
+
+pre-push:
+  parallel: true
+  commands:
+    typecheck:
+      run: uv run mypy .
+    test:
+      run: uv run pytest -p no:cacheprovider
+    vuln:
+      run: uv export --frozen --no-hashes --no-emit-project | uvx pip-audit -r /dev/stdin --disable-pip
+
+commit-msg:
+  commands:
+    commitizen:
+      run: uv run cz check --commit-msg-file {1}
