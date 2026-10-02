@@ -73,7 +73,7 @@ jobs:
           enable-cache: true
 
       - run: uv python install
-      - run: uv sync --group dev
+      - run: uv sync --dev --locked
 
       - name: Run tests
         run: uv run pytest --cov --cov-report=xml --junitxml=junit.xml -o junit_family=legacy
@@ -87,7 +87,8 @@ jobs:
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v5
+        uses: codecov/codecov-action@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          report-type: test_results
+          token: ${{ secrets.CODECOV_TOKEN }} 
+          files: junit.xml 
+          report_type: test_results
