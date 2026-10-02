@@ -16,9 +16,11 @@ pre-push:
     typecheck:
       run: uv run mypy .
     test:
-      run: uv run pytest -p no:cacheprovider
+      run: uv run pytest
     vuln:
-      run: uv export --frozen --no-hashes --no-emit-project | uvx pip-audit -r /dev/stdin --disable-pip
+      run: |
+        uv export --frozen --no-hashes --no-emit-project -o requirements-audit.txt \
+        && uvx pip-audit -r requirements-audit.txt
 
 commit-msg:
   commands:
